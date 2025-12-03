@@ -28,8 +28,27 @@ fun main() {
         return sum
     }
 
-    fun part2(input: List<String>): Int {
-        var sum = 0
+    fun isInvalidId2(id: String, count: Int): Boolean {
+        if (count > id.length / 2) return false
+        if (id.length % count != 0) return isInvalidId2(id, count + 1)
+        if (id.chunked(count).distinct().size == 1) {
+            return true
+        } else {
+            return isInvalidId2(id, count + 1)
+        }
+    }
+
+    fun part2(input: List<String>): Long {
+        var sum = 0L
+
+        input[0].split(',').forEach {
+            val range = it.split('-')
+            for (i in range[0].toLong()..range[1].toLong()) {
+                if (isInvalidId2(i.toString(), 1)) {
+                    sum += i
+                }
+            }
+        }
 
         return sum
     }
@@ -37,7 +56,7 @@ fun main() {
     // test if implementation meets criteria from the description, like:
     val testInput = readInput(pkg = "year2025/day02", name = "Day02_test")
     check(part1(testInput) == 1227775554L)
-    check(part2(testInput) == 0)
+    check(part2(testInput) == 4174379265L)
 
     val input = readInput(pkg = "year2025/day02", name = "Day02")
     part1(input).println()
