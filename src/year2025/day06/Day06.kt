@@ -23,16 +23,37 @@ fun main() {
         return results.sum()
     }
 
-    fun part2(input: List<String>): Int {
-        var sum = 0
+    fun part2(input: List<String>): Long {
+        var currentOperator = ' '
+        val longestLine = input.maxOf { it.length }
+        val operators = input.last()
+        val results = mutableListOf<Long>()
 
-        return sum
+        for (index in 0 until longestLine) {
+            val it = operators.getOrNull(index)
+            if (it == '+' || it == '*') {
+                results.add(if (it == '+') 0L else 1L)
+                currentOperator = it
+            }
+
+            val currentInput = input.mapNotNull { it.getOrNull(index) }.filter { it.isDigit() }.joinToString("").toLongOrNull()
+
+            if (currentInput != null) {
+                if (currentOperator == '+') {
+                    results[results.lastIndex] += currentInput
+                } else if (currentOperator == '*') {
+                    results[results.lastIndex] *= currentInput
+                }
+            }
+        }
+
+        return results.sum()
     }
 
     // test if implementation meets criteria from the description, like:
     val testInput = readInput(pkg = "year2025/day06", name = "Day06_test")
     check(part1(testInput) == 4277556L)
-    check(part2(testInput) == 0)
+    check(part2(testInput) == 3263827L)
 
     val input = readInput(pkg = "year2025/day06", name = "Day06")
     part1(input).println()
